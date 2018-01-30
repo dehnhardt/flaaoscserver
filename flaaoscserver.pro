@@ -15,16 +15,71 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-	src/main.cpp \
-	src/osc/osclistener.cpp \
-	src/osc/oscsender.cpp
+        src/main.cpp \
+        src/osc/osclistener.cpp \
+        src/osc/oscsender.cpp \
+    src/FlaaOscServer.cpp \
+    src/logging/MyLogger.cpp \
+    src/osc/oschandler.cpp \
+    src/handler/FLORepositoryModuleHandler.cpp \
+    src/handler/FLOPingHandler.cpp
 
 HEADERS += \
     src/osc/oscpkt.hh \
     src/osc/udp.hh \
-	src/osc/osclistener.h \
-	src/osc/oscsender.h
+        src/osc/osclistener.h \
+        src/osc/oscsender.h \
+    src/FlaaOscServer.h \
+    src/logging/MyLogger.h \
+    src/spdlog/details/async_log_helper.h \
+    src/spdlog/details/async_logger_impl.h \
+    src/spdlog/details/file_helper.h \
+    src/spdlog/details/log_msg.h \
+    src/spdlog/details/logger_impl.h \
+    src/spdlog/details/mpmc_bounded_q.h \
+    src/spdlog/details/null_mutex.h \
+    src/spdlog/details/os.h \
+    src/spdlog/details/pattern_formatter_impl.h \
+    src/spdlog/details/registry.h \
+    src/spdlog/details/spdlog_impl.h \
+    src/spdlog/fmt/bundled/format.h \
+    src/spdlog/fmt/bundled/ostream.h \
+    src/spdlog/fmt/bundled/posix.h \
+    src/spdlog/fmt/bundled/printf.h \
+    src/spdlog/fmt/bundled/time.h \
+    src/spdlog/fmt/fmt.h \
+    src/spdlog/fmt/ostr.h \
+    src/spdlog/sinks/android_sink.h \
+    src/spdlog/sinks/ansicolor_sink.h \
+    src/spdlog/sinks/base_sink.h \
+    src/spdlog/sinks/dist_sink.h \
+    src/spdlog/sinks/file_sinks.h \
+    src/spdlog/sinks/msvc_sink.h \
+    src/spdlog/sinks/null_sink.h \
+    src/spdlog/sinks/ostream_sink.h \
+    src/spdlog/sinks/sink.h \
+    src/spdlog/sinks/stdout_sinks.h \
+    src/spdlog/sinks/syslog_sink.h \
+    src/spdlog/sinks/wincolor_sink.h \
+    src/spdlog/sinks/windebug_sink.h \
+    src/spdlog/async_logger.h \
+    src/spdlog/common.h \
+    src/spdlog/formatter.h \
+    src/spdlog/logger.h \
+    src/spdlog/spdlog.h \
+    src/spdlog/tweakme.h \
+    src/osc/oschandler.h \
+    src/handler/FLORepositoryModuleHandler.h \
+    src/handler/FLOPingHandler.h
 
 DISTFILES += \
-    .astylerc
+    .astylerc \
+    src/spdlog/fmt/bundled/LICENSE.rst
 
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../build-flaarlib-Desktop_ad6991-Debug/release/ -lflaarlib
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../build-flaarlib-Desktop_ad6991-Debug/debug/ -lflaarlib
+else:unix: LIBS += -L$$PWD/../build-flaarlib-Desktop_ad6991-Debug/ -lflaarlib
+
+INCLUDEPATH += $$PWD/../flaarlib/src
+DEPENDPATH += $$PWD/../build-flaarlib-Desktop_ad6991-Debug
