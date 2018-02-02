@@ -27,6 +27,12 @@ public: //getter
 	OscListener *udpListener() const;
 	OscSender *udpSender() const;
 
+	void setListenPort(int iListenPort);
+	void setSendPort(int iSendHost);
+	void setSendHost(const std::string &sSendHost);
+
+	void createOscSockets();
+
 public slots:
 	void listenerThreadStarted();
 	void listenerThreadFinished();
@@ -40,6 +46,10 @@ private: // methods
 
 private: // members
 	static FlaaOscServer *_instance;
+
+	int m_iListenPort = 0;
+	int m_iSendPort = 0;
+	std::string m_sSendHost = "";
 
 	flaarlib::Flaarlib *m_pFlaarlib;
 	OscListener *m_pUdpListener = 0;

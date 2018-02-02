@@ -4,18 +4,21 @@
 #include "handler/FLOPingHandler.h"
 #include "handler/FLORepositoryModuleHandler.h"
 
+void FlaaOscServer::createOscSockets()
+{
+	m_pUdpListener = new OscListener(m_iListenPort);
+	m_pUdpSender = new OscSender(m_sSendHost, m_iSendPort);
+	registerHandler();
+	m_pUdpListener->start();
+	m_pUdpSender->start();
+}
+
 FlaaOscServer::FlaaOscServer()
 {
 	m_pFlaarlib = flaarlib::Flaarlib::instance();
 	m_pFlaarlib->init();
 	flaarlib::MyLogger *l = new flaarlib::MyLogger();
 	flaarlib::FLLog::registerLogger(l);
-	m_pUdpListener = new OscListener(9109);
-	m_pUdpSender = new OscSender(9110);
-	registerHandler();
-
-	m_pUdpListener->start();
-	m_pUdpSender->start();
 }
 
 FlaaOscServer::~FlaaOscServer()
@@ -35,6 +38,21 @@ void FlaaOscServer::connectSlots()
 	connect(m_pUdpListener, &OscListener::finished, m_pUdpListener, &QObject::deleteLater);
 	connect(m_pUdpListener, &OscListener::finished, this, &FlaaOscServer::listenerThreadFinished);
 	connect(m_pUdpListener, &OscListener::started, this, &FlaaOscServer::listenerThreadStarted);
+}
+
+void FlaaOscServer::setSendHost(const std::string &sSendHost)
+{
+	m_sSendHost = sSendHost;
+}
+
+void FlaaOscServer::setSendPort(int iSendHost)
+{
+	m_iSendPort = iSendHost;
+}
+
+void FlaaOscServer::setListenPort(int iListenPort)
+{
+	m_iListenPort = iListenPort;
 }
 
 OscSender *FlaaOscServer::udpSender() const
