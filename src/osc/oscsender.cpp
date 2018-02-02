@@ -11,19 +11,15 @@ using namespace oscpkt;
 using flaarlib::FLLog;
 
 OscSender::OscSender( int iPortNum) :
-	QThread(),
 	m_sHost("localhost"),
 	m_iPortNum(iPortNum)
 {
-	init();
 }
 
 OscSender::OscSender(string sHost, int iPortNum) :
-	QThread(),
 	m_sHost(sHost),
 	m_iPortNum(iPortNum)
 {
-	init();
 }
 
 OscSender::~OscSender()
@@ -36,10 +32,15 @@ OscSender::~OscSender()
 	m_pUdpSocket = 0;
 }
 
+void OscSender::start()
+{
+	run();
+}
+
 void OscSender::init()
 {
-	m_pMessageQueue = new QQueue<Message>();
 	m_pUdpSocket = new UdpSocket();
+	m_pMessageQueue = new QQueue<Message>();
 	if( m_pUdpSocket->isOk() )
 		FLLog::debug("Socket ready, sending to host %s on port %d", m_sHost.c_str(), m_iPortNum);
 	else
@@ -49,7 +50,6 @@ void OscSender::init()
 
 void OscSender::enqueuMessage(Message message)
 {
-
 	if( m_pMessageQueue )
 		m_pMessageQueue->enqueue(message);
 	if( ! m_bRunning )
@@ -87,20 +87,11 @@ void OscSender::sendPackage(PacketWriter pw)
 	}
 	if( !ok )
 		FLLog::error("Sending of packet failed");
-	wait(30);
 }
 
-void OscSender::ping()
-{
-	Message msg("/ping");
-	msg.pushInt32(m_iPing);
-	enqueuMessage(msg);
-	qDebug() << "Send ping: " << m_iPing;
-	++m_iPing;
-
-}
 
 void OscSender::run()
 {
+	init();
 	m_pUdpSocket->connectTo(m_sHost, m_iPortNum);
 }
