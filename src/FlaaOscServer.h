@@ -5,9 +5,11 @@
 #include "osc/osclistener.h"
 #include "osc/oscsender.h"
 
-class FlaaOscServer
-{
+#include <QObject>
 
+class FlaaOscServer : public QObject
+{
+	Q_OBJECT
 
 public:
 	// singleton pattern
@@ -18,24 +20,30 @@ public:
 			_instance = new FlaaOscServer();
 		return (_instance);
 	}
+
 	void testConnection();
 
 public: //getter
-	OscListener *pOscListener() const;
-	OscSender *pOscSender() const;
+	OscListener *udpListener() const;
+	OscSender *udpSender() const;
+
+public slots:
+	void listenerThreadStarted();
+	void listenerThreadFinished();
 
 private: // methods
 	FlaaOscServer();
 	FlaaOscServer(const FlaaOscServer &);
 	virtual ~FlaaOscServer();
 	void registerHandler();
+	void connectSlots();
 
 private: // members
 	static FlaaOscServer *_instance;
 
 	flaarlib::Flaarlib *m_pFlaarlib;
-	OscListener *m_pOscListener = 0;
-	OscSender *m_pOscSender = 0;
+	OscListener *m_pUdpListener = 0;
+	OscSender *m_pUdpSender = 0;
 
 	class CGuard
 	{

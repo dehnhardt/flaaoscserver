@@ -10,43 +10,63 @@ FlaaOscServer::FlaaOscServer()
 	m_pFlaarlib->init();
 	flaarlib::MyLogger *l = new flaarlib::MyLogger();
 	flaarlib::FLLog::registerLogger(l);
-	m_pOscListener = new OscListener(9109);
+	m_pUdpListener = new OscListener(9109);
+	m_pUdpSender = new OscSender(9110);
 	registerHandler();
-	m_pOscSender = new OscSender(9110);
-	m_pOscListener->start();
-	m_pOscSender->start();
+
+	m_pUdpListener->start();
+	m_pUdpSender->start();
 }
 
 FlaaOscServer::~FlaaOscServer()
 {
-	m_pOscListener->setBRunning(false);
-	delete m_pOscListener;
+	m_pUdpListener->setBRunning(false);
+	delete m_pUdpListener;
 }
 
 void FlaaOscServer::registerHandler()
 {
-	m_pOscListener->registerHandler(new FLOPingHandler());
-	m_pOscListener->registerHandler(new FLORepositoryModuleHandler());
+	m_pUdpListener->registerHandler(new FLOPingHandler());
+	m_pUdpListener->registerHandler(new FLORepositoryModuleHandler());
 }
 
-OscSender *FlaaOscServer::pOscSender() const
+void FlaaOscServer::connectSlots()
 {
-	return m_pOscSender;
+	connect(m_pUdpListener, &OscListener::finished, m_pUdpListener, &QObject::deleteLater);
+	connect(m_pUdpListener, &OscListener::finished, this, &FlaaOscServer::listenerThreadFinished);
+	connect(m_pUdpListener, &OscListener::started, this, &FlaaOscServer::listenerThreadStarted);
 }
+
+OscSender *FlaaOscServer::udpSender() const
+{
+	return m_pUdpSender;
+}
+
+void FlaaOscServer::listenerThreadStarted()
+{
+	qDebug( "listener thread has started" );
+}
+
+void FlaaOscServer::listenerThreadFinished()
+{
+	qDebug( "listener thread has stopped" );
+	m_pUdpListener->deleteLater();
+}
+
 
 void FlaaOscServer::testConnection()
 {
-	m_pOscSender->ping();
-	m_pOscSender->ping();
-	m_pOscSender->ping();
-	m_pOscSender->ping();
-	m_pOscSender->ping();
-	m_pOscSender->ping();
+	FLOPingHandler *phandler = static_cast<FLOPingHandler *>(m_pUdpListener->handlerFor("/ping"));
+	phandler->sendPing();
+	phandler->sendPing();
+	phandler->sendPing();
+	phandler->sendPing();
+	phandler->sendPing();
 }
 
-OscListener *FlaaOscServer::pOscListener() const
+OscListener *FlaaOscServer::udpListener() const
 {
-	return m_pOscListener;
+	return m_pUdpListener;
 }
 
 FlaaOscServer *FlaaOscServer::_instance = 0;

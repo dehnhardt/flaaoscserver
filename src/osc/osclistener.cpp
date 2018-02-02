@@ -14,10 +14,22 @@ OscListener::OscListener( int iPortNum) :
 {
 }
 
+OscListener::~OscListener()
+{
+	delete m_pUdpSocket;
+	m_pUdpSocket = 0;
+}
+
 void OscListener::run()
 {
 	m_bRunning = true;
+	init();
 	runListener();
+}
+
+void OscListener::init()
+{
+	m_pUdpSocket = new oscpkt::UdpSocket();
 }
 
 void OscListener::runListener()
@@ -25,35 +37,32 @@ void OscListener::runListener()
 
 	using flaarlib::FLLog;
 
-	using namespace oscpkt;
 
-	UdpSocket *socket = new UdpSocket();
-	socket->bindTo(m_iPortNum);
-	if (!socket->isOk())
-		FLLog::error( "Error opening port %d: %s", m_iPortNum, socket->errorMessage().c_str());
+	m_pUdpSocket->bindTo(m_iPortNum);
+	if (!m_pUdpSocket->isOk())
+		FLLog::error( "Error opening port %d: %s", m_iPortNum, m_pUdpSocket->errorMessage().c_str());
 	else
 	{
 		FLLog::debug( "Listener started, will listen to packets on port %d", m_iPortNum );
 		PacketReader pr;
-		PacketWriter pw;
-		while (m_bRunning && socket->isOk())
+		while (m_bRunning && m_pUdpSocket->isOk())
 		{
-			if (socket->receiveNextPacket(30))
+			if (m_pUdpSocket->receiveNextPacket(30))
 			{
-				pr.init(socket->packetData(), socket->packetSize());
+				pr.init(m_pUdpSocket->packetData(), m_pUdpSocket->packetSize());
 				oscpkt::Message *message;
 				while (pr.isOk() && (message = pr.popMessage()) != 0)
 				{
 					OscHandler *handler = handlerFor(message);
 					if( handler)
-						handler->handle(socket, message);
+						handler->handle(m_pUdpSocket, message);
 					else
 						FLLog::debug( "Listener: unhandled message: %s", message->addressPattern().c_str());
 				}
 			}
 		}
 		FLLog::debug("closing socket");
-		socket->close();
+		m_pUdpSocket->close();
 	}
 }
 

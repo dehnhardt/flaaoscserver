@@ -20,7 +20,7 @@ bool FLORepositoryModuleHandler::sendModuleRepository()
 {
 	std::string path = "/ws/repository/module";
 	FLLog::debug("start sending module Repository (path: %s)", path.c_str());
-	OscSender *sender = FlaaOscServer::instance()->pOscSender();
+	OscSender *sender = FlaaOscServer::instance()->udpSender();
 	FLRepository *repository = Flaarlib::instance()->flRepository();
 	std::map<MODULE_TYPE,std::map<std::string,MODULE_INFO *>> moduleType = repository->FLRepositoryMap();
 	oscpkt::PacketWriter w;
