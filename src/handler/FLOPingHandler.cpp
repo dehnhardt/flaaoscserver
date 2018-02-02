@@ -1,5 +1,8 @@
 #include "FLOPingHandler.h"
 #include "logging/FLLog.h"
+#include "../osc/oscsender.h"
+#include "../FlaaOscServer.h"
+
 
 FLOPingHandler::FLOPingHandler() : OscHandler ("/ping")
 {
@@ -22,4 +25,13 @@ bool FLOPingHandler::handle(oscpkt::UdpSocket *socket, oscpkt::Message *message)
 		return true;
 	}
 	return false;
+}
+
+void FLOPingHandler::sendPing()
+{
+	OscSender *sender = FlaaOscServer::instance()->udpSender();
+	Message msg("/ping");
+	msg.pushInt32(m_iPing);
+	sender->enqueuMessage(msg);
+	++m_iPing;
 }
