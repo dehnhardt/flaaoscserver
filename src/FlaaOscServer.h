@@ -31,11 +31,14 @@ public: //getter
 	void setSendPort(int iSendHost);
 	void setSendHost(const std::string &sSendHost);
 
-	void createOscSockets();
+	void openSockets();
+	void closeSockets();
 
 public slots:
 	void listenerThreadStarted();
 	void listenerThreadFinished();
+	void onApplicationExit();
+
 
 private: // methods
 	FlaaOscServer();
@@ -54,6 +57,7 @@ private: // members
 	flaarlib::Flaarlib *m_pFlaarlib;
 	OscListener *m_pUdpListener = 0;
 	OscSender *m_pUdpSender = 0;
+	QThread *m_pListenerThread = 0;
 
 	class CGuard
 	{

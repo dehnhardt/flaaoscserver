@@ -5,10 +5,10 @@
 
 #include <QString>
 
-using namespace oscpkt;
+using flaarlib::FLLog;
 
 OscListener::OscListener( int iPortNum) :
-	QThread( ),
+	QObject( ),
 	OscHandler ("/"),
 	m_iPortNum( iPortNum)
 {
@@ -20,23 +20,25 @@ OscListener::~OscListener()
 	m_pUdpSocket = 0;
 }
 
-void OscListener::run()
-{
-	m_bRunning = true;
-	init();
-	runListener();
-}
 
 void OscListener::init()
 {
+	FLLog::debug("Listener slot init called");
+	m_bRunning = true;
 	m_pUdpSocket = new oscpkt::UdpSocket();
+	emit( started());
+	runListener();
+}
+
+void OscListener::exit()
+{
+	FLLog::debug("Listener slot exit called");
+	setBRunning(false);
+	emit(finished());
 }
 
 void OscListener::runListener()
 {
-
-	using flaarlib::FLLog;
-
 
 	m_pUdpSocket->bindTo(m_iPortNum);
 	if (!m_pUdpSocket->isOk())
@@ -45,7 +47,7 @@ void OscListener::runListener()
 	{
 		FLLog::debug( "Listener started, will listen to packets on port %d", m_iPortNum );
 		PacketReader pr;
-		while (m_bRunning && m_pUdpSocket->isOk())
+		while ( m_pUdpSocket->isOk())
 		{
 			if (m_pUdpSocket->receiveNextPacket(30))
 			{
@@ -60,6 +62,8 @@ void OscListener::runListener()
 						FLLog::debug( "Listener: unhandled message: %s", message->addressPattern().c_str());
 				}
 			}
+			if( !m_bRunning )
+				break;
 		}
 		FLLog::debug("closing socket");
 		m_pUdpSocket->close();

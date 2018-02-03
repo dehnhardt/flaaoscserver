@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
 		cerr << parser->helpText().toStdString();
 		exit (10);
 	}
-	s->createOscSockets();
+	s->openSockets();
 	QTimer::singleShot(1000, [s]() {s->testConnection();} );
 
 	return app.exec();

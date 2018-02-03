@@ -4,14 +4,8 @@
 #include "handler/FLOPingHandler.h"
 #include "handler/FLORepositoryModuleHandler.h"
 
-void FlaaOscServer::createOscSockets()
-{
-	m_pUdpListener = new OscListener(m_iListenPort);
-	m_pUdpSender = new OscSender(m_sSendHost, m_iSendPort);
-	registerHandler();
-	m_pUdpListener->start();
-	m_pUdpSender->start();
-}
+#include <QCoreApplication>
+#include <QThread>
 
 FlaaOscServer::FlaaOscServer()
 {
@@ -27,6 +21,29 @@ FlaaOscServer::~FlaaOscServer()
 	delete m_pUdpListener;
 }
 
+void FlaaOscServer::openSockets()
+{
+	m_pListenerThread = new QThread(this);
+	m_pUdpSender = new OscSender(m_sSendHost, m_iSendPort);
+	m_pUdpListener = new OscListener(m_iListenPort);
+
+	m_pUdpListener->moveToThread(m_pListenerThread);
+	registerHandler();
+	connectSlots();
+
+	m_pUdpSender->start();
+	m_pListenerThread->start();
+}
+
+void FlaaOscServer::closeSockets()
+{
+	m_pUdpListener->setBRunning(false);
+	m_pUdpListener->deleteLater();
+	m_pListenerThread->terminate();
+	m_pListenerThread->wait();
+	m_pListenerThread->deleteLater();
+}
+
 void FlaaOscServer::registerHandler()
 {
 	m_pUdpListener->registerHandler(new FLOPingHandler());
@@ -35,9 +52,12 @@ void FlaaOscServer::registerHandler()
 
 void FlaaOscServer::connectSlots()
 {
-	connect(m_pUdpListener, &OscListener::finished, m_pUdpListener, &QObject::deleteLater);
-	connect(m_pUdpListener, &OscListener::finished, this, &FlaaOscServer::listenerThreadFinished);
+	connect(m_pListenerThread, &QThread::started, m_pUdpListener, &OscListener::init);
+	connect(m_pListenerThread, &QThread::finished, m_pUdpListener, &OscListener::exit);
 	connect(m_pUdpListener, &OscListener::started, this, &FlaaOscServer::listenerThreadStarted);
+	connect(m_pUdpListener, &OscListener::finished, this, &FlaaOscServer::listenerThreadFinished);
+	// Allow graceful termination of the thread
+	connect(QCoreApplication::instance(), &QCoreApplication::aboutToQuit, this, &FlaaOscServer::onApplicationExit );
 }
 
 void FlaaOscServer::setSendHost(const std::string &sSendHost)
@@ -69,6 +89,11 @@ void FlaaOscServer::listenerThreadFinished()
 {
 	qDebug( "listener thread has stopped" );
 	m_pUdpListener->deleteLater();
+}
+
+void FlaaOscServer::onApplicationExit()
+{
+	closeSockets();
 }
 
 
