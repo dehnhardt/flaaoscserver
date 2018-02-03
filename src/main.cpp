@@ -42,14 +42,14 @@ int main(int argc, char *argv[])
 		if( !ok )
 		{
 			cerr << parser->helpText().toStdString();
-			exit(0);
+			exit(1);
 		}
 		s->setListenPort(i);
 	}
 	else
 	{
 		cerr << parser->helpText().toStdString();
-		exit (10);
+		exit (2);
 	}
 	if( sp != "" )
 	{
@@ -57,24 +57,21 @@ int main(int argc, char *argv[])
 		if( !ok )
 		{
 			cerr << parser->helpText().toStdString();
-			exit(0);
+			exit(1);
 		}
 		s->setSendPort(i);
 	}
 	else
 	{
 		cerr << parser->helpText().toStdString();
-		exit (10);
+		exit (2);
 	}
 	if( sh != "" )
-	{
-		cerr << parser->helpText().toStdString();
 		s->setSendHost(sh.toStdString());
-	}
 	else
 	{
 		cerr << parser->helpText().toStdString();
-		exit (10);
+		exit (2);
 	}
 	s->openSockets();
 	QTimer::singleShot(1000, [s]() {s->testConnection();} );
