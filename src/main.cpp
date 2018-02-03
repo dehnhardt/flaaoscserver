@@ -17,12 +17,11 @@ int main(int argc, char *argv[])
 	parser->addHelpOption();
 	parser->addVersionOption();
 
-	// A boolean option with multiple names (-f, --filename)
-	QCommandLineOption listenPortOption("lp", "the port to listen on", "listenPort");
+	QCommandLineOption listenPortOption("l", "the port to listen on", "listenPort");
 	listenPortOption.setDefaultValue("9109");
-	QCommandLineOption sendHostOption("sh", "the hoste to send to", "sendHost");
+	QCommandLineOption sendHostOption("S", "the host to send to", "sendHost");
 	sendHostOption.setDefaultValue("localhost");
-	QCommandLineOption sendPortOption("sp", "the port to send to", "sendPort");
+	QCommandLineOption sendPortOption("s", "the port to send to", "sendPort");
 	sendPortOption.setDefaultValue("9110");
 	parser->addOption(listenPortOption);
 	parser->addOption(sendHostOption);
@@ -30,9 +29,9 @@ int main(int argc, char *argv[])
 
 	// Process the actual command line arguments given by the user
 	parser->process(app);
-	QString lp = parser->value("lp");
-	QString sh = parser->value("sh");
-	QString sp = parser->value("sp");
+	QString lp = parser->value("l");
+	QString sh = parser->value("S");
+	QString sp = parser->value("s");
 
 	FlaaOscServer *s = FlaaOscServer::instance();
 	bool ok;
