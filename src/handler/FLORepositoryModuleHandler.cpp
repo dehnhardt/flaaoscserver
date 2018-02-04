@@ -51,6 +51,7 @@ bool FLORepositoryModuleHandler::sendModuleRepository()
 			oscpkt::Message msgType = oscpkt::Message(path);
 			msgType.pushStr(moduleTypeName);
 			msgType.pushInt32(i->type);
+			msgType.pushInt32(i->dataType);
 			msgType.pushStr(i->functionalname);
 			msgType.pushStr(i->description);
 			w.addMessage(msgType);
