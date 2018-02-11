@@ -21,8 +21,8 @@ SOURCES += \
     src/FlaaOscServer.cpp \
     src/logging/MyLogger.cpp \
     src/osc/oschandler.cpp \
-    src/handler/FLORepositoryModuleHandler.cpp \
-    src/handler/FLOPingHandler.cpp
+    src/handler/FLOPingHandler.cpp \
+    src/handler/FLOModuleRepositoryHandler.cpp
 
 HEADERS += \
     src/osc/oscpkt.hh \
@@ -69,8 +69,8 @@ HEADERS += \
     src/spdlog/spdlog.h \
     src/spdlog/tweakme.h \
     src/osc/oschandler.h \
-    src/handler/FLORepositoryModuleHandler.h \
-    src/handler/FLOPingHandler.h
+    src/handler/FLOPingHandler.h \
+    src/handler/FLOModuleRepositoryHandler.h
 
 DISTFILES += \
     .astylerc \

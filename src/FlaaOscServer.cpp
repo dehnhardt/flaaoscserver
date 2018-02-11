@@ -2,7 +2,7 @@
 #include "logging/FLLogger.h"
 #include "logging/MyLogger.h"
 #include "handler/FLOPingHandler.h"
-#include "handler/FLORepositoryModuleHandler.h"
+#include "handler/FLOModuleRepositoryHandler.h"
 
 #include <QCoreApplication>
 #include <QThread>
@@ -47,7 +47,7 @@ void FlaaOscServer::closeSockets()
 void FlaaOscServer::registerHandler()
 {
 	m_pUdpListener->registerHandler(new FLOPingHandler());
-	m_pUdpListener->registerHandler(new FLORepositoryModuleHandler());
+	m_pUdpListener->registerHandler(new FLOModuleRepositoryHandler());
 }
 
 void FlaaOscServer::connectSlots()

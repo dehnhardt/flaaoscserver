@@ -1,4 +1,4 @@
-#include "FLORepositoryModuleHandler.h"
+#include "FLOModuleRepositoryHandler.h"
 
 #include "logging/FLLog.h"
 #include "Flaarlib.h"
@@ -10,13 +10,13 @@
 using namespace flaarlib;
 using flaarlib::FLLog;
 
-FLORepositoryModuleHandler::FLORepositoryModuleHandler()
+FLOModuleRepositoryHandler::FLOModuleRepositoryHandler()
 	:OscHandler ("/ws/repository/get")
 {
 
 }
 
-bool FLORepositoryModuleHandler::sendModuleRepository()
+bool FLOModuleRepositoryHandler::sendModuleRepository()
 {
 	std::string path = "/ws/repository/module";
 	FLLog::debug("start sending module Repository (path: %s)", path.c_str());
@@ -62,7 +62,7 @@ bool FLORepositoryModuleHandler::sendModuleRepository()
 	return true;
 }
 
-bool FLORepositoryModuleHandler::handle(UdpSocket *socket, Message *message)
+bool FLOModuleRepositoryHandler::handle(UdpSocket *socket, Message *message)
 {
 	if( message->match(prefix()))
 	{
