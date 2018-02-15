@@ -3,6 +3,7 @@
 #include "logging/MyLogger.h"
 #include "handler/FLOPingHandler.h"
 #include "handler/FLOModuleRepositoryHandler.h"
+#include "handler/FLOModuleInstancesHandler.h"
 
 #include <QCoreApplication>
 #include <QThread>
@@ -38,7 +39,6 @@ void FlaaOscServer::openSockets()
 void FlaaOscServer::closeSockets()
 {
 	m_pUdpListener->setBRunning(false);
-	m_pUdpListener->deleteLater();
 	m_pListenerThread->terminate();
 	m_pListenerThread->wait();
 	m_pListenerThread->deleteLater();
@@ -48,6 +48,7 @@ void FlaaOscServer::registerHandler()
 {
 	m_pUdpListener->registerHandler(new FLOPingHandler());
 	m_pUdpListener->registerHandler(new FLOModuleRepositoryHandler());
+	m_pUdpListener->registerHandler(new FLOModuleInstancesHandler());
 }
 
 void FlaaOscServer::connectSlots()
