@@ -3,13 +3,13 @@
 #include <QDebug>
 
 FLOModuleInstancesHandler::FLOModuleInstancesHandler() :
-	OscHandler ("/ws/instances/modules")
+	OscHandler ("/ws/instances/modules/add")
 {
 
 }
 
 bool FLOModuleInstancesHandler::handle(UdpSocket *socket, Message *message)
 {
-	qDebug() << message->addressPattern().c_str();
+	qDebug() << message->prettyPrint().c_str();
 }
 
