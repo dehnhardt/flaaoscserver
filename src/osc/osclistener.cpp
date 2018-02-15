@@ -59,7 +59,10 @@ void OscListener::runListener()
 					if( handler)
 						handler->handle(m_pUdpSocket, message);
 					else
-						FLLog::debug( "Listener: unhandled message: %s", message->addressPattern().c_str());
+					{
+						FLLog::debug( "Listener: unhandled message: ");
+						FLLog::debug(message->prettyPrint());
+					}
 				}
 			}
 			if( !m_bRunning )
