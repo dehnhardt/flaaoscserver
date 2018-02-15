@@ -22,7 +22,8 @@ SOURCES += \
     src/logging/MyLogger.cpp \
     src/osc/oschandler.cpp \
     src/handler/FLOPingHandler.cpp \
-    src/handler/FLOModuleRepositoryHandler.cpp
+    src/handler/FLOModuleRepositoryHandler.cpp \
+    src/handler/FLOModuleInstancesHandler.cpp
 
 HEADERS += \
     src/osc/oscpkt.hh \
@@ -70,7 +71,8 @@ HEADERS += \
     src/spdlog/tweakme.h \
     src/osc/oschandler.h \
     src/handler/FLOPingHandler.h \
-    src/handler/FLOModuleRepositoryHandler.h
+    src/handler/FLOModuleRepositoryHandler.h \
+    src/handler/FLOModuleInstancesHandler.h
 
 DISTFILES += \
     .astylerc \
