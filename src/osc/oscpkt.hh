@@ -72,7 +72,7 @@ typedef unsigned __int64 uint64_t;
 #include <string>
 #include <vector>
 #include <list>
-#include <iostream>
+#include <sstream>
 
 #if defined(OSCPKT_OSTREAM_OUTPUT) || defined(OSCPKT_TEST)
 #include <iostream>
