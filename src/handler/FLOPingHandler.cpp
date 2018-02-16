@@ -1,6 +1,6 @@
 #include "FLOPingHandler.h"
 #include "logging/FLLog.h"
-#include "../osc/oscsender.h"
+#include "../flaaoscsdk/oscsender.h"
 #include "../FlaaOscServer.h"
 
 

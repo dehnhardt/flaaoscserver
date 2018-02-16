@@ -1,7 +1,7 @@
 #ifndef PINGHANDLER_H
 #define PINGHANDLER_H
 
-#include "../osc/oschandler.h"
+#include "../flaaoscsdk/oschandler.h"
 
 class FLOPingHandler : public OscHandler
 {

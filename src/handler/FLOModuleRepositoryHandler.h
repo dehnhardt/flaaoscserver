@@ -1,7 +1,7 @@
 #ifndef FLOMODULEREPOSITORYHANDLER_H
 #define FLOMODULEREPOSITORYHANDLER_H
 
-#include "../osc/oschandler.h"
+#include "../flaaoscsdk/oschandler.h"
 
 class FLOModuleRepositoryHandler : public OscHandler
 {

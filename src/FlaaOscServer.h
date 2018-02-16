@@ -2,8 +2,8 @@
 #define FLAAOSCSERVER_H
 
 #include "Flaarlib.h"
-#include "osc/osclistener.h"
-#include "osc/oscsender.h"
+#include "flaaoscsdk/osclistener.h"
+#include "flaaoscsdk/oscsender.h"
 
 #include <QObject>
 

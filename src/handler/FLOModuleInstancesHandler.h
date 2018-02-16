@@ -1,7 +1,7 @@
 #ifndef FLOMODULEINSTANCESHANDLER_H
 #define FLOMODULEINSTANCESHANDLER_H
 
-#include "../osc/oschandler.h"
+#include "../flaaoscsdk/oschandler.h"
 
 class FLOModuleInstancesHandler : public OscHandler
 {

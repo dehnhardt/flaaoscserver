@@ -4,8 +4,8 @@
 #include "Flaarlib.h"
 #include "FLRepository.h"
 #include "../FlaaOscServer.h"
-#include "../osc/oscpkt.hh"
-#include "../osc/oscsender.h"
+#include "../flaaoscsdk/oscpkt.hh"
+#include "../flaaoscsdk/oscsender.h"
 
 using namespace flaarlib;
 using flaarlib::FLLog;
