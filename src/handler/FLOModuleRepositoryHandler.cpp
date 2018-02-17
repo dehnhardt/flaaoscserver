@@ -13,6 +13,7 @@ using flaarlib::FLLog;
 FLOModuleRepositoryHandler::FLOModuleRepositoryHandler()
 	:OscHandler ("/ws/repository/get")
 {
+	m_sHandlerName = "FLOModuleRepositoryHandler";
 
 }
 

@@ -4,9 +4,10 @@
 #include "../FlaaOscServer.h"
 
 
-FLOPingHandler::FLOPingHandler() : OscHandler ("/ping")
+FLOPingHandler::FLOPingHandler() :
+	OscHandler ("/ping")
 {
-
+	m_sHandlerName="FLOPingHandler";
 }
 
 bool FLOPingHandler::handle(oscpkt::UdpSocket *socket, oscpkt::Message *message)

@@ -3,9 +3,9 @@
 #include <QDebug>
 
 FLOModuleInstancesHandler::FLOModuleInstancesHandler() :
-	OscHandler ("/ws/instances/modules/add")
+	OscHandler ("/ws/instances/modules")
 {
-
+	m_sHandlerName="FLOModuleInstancesHandler";
 }
 
 bool FLOModuleInstancesHandler::handle(UdpSocket *socket, Message *message)
