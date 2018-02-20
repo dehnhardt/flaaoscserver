@@ -15,25 +15,25 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-	src/main.cpp \
-	src/flaaoscsdk/osclistener.cpp \
-	src/flaaoscsdk/oscsender.cpp \
-	src/flaaoscsdk/oschandler.cpp \
-	src/FlaaOscServer.cpp \
+        src/main.cpp \
+        src/flaaoscsdk/osclistener.cpp \
+        src/flaaoscsdk/oscsender.cpp \
+        src/flaaoscsdk/oschandler.cpp \
+        src/FlaaOscServer.cpp \
     src/logging/MyLogger.cpp \
-	src/handler/FLOPingHandler.cpp \
-	src/handler/FLOModuleRepositoryHandler.cpp \
-	src/handler/FLOModuleInstancesHandler.cpp \
+        src/handler/FLOPingHandler.cpp \
+        src/handler/FLOModuleRepositoryHandler.cpp \
+        src/handler/FLOModuleInstancesHandler.cpp \
     src/flaaoscsdk/FLOModuleInstanceDAO.cpp \
     src/flaaoscsdk/FLOModuleInstancesModel.cpp
 
 HEADERS += \
-	src/flaaoscsdk/oscpkt.hh \
-	src/flaaoscsdk/udp.hh \
-	src/flaaoscsdk/osclistener.h \
-	src/flaaoscsdk/oscsender.h \
-	src/flaaoscsdk/oschandler.h \
-	src/FlaaOscServer.h \
+        src/flaaoscsdk/oscpkt.hh \
+        src/flaaoscsdk/udp.hh \
+        src/flaaoscsdk/osclistener.h \
+        src/flaaoscsdk/oscsender.h \
+        src/flaaoscsdk/oschandler.h \
+        src/FlaaOscServer.h \
     src/logging/MyLogger.h \
     src/spdlog/details/async_log_helper.h \
     src/spdlog/details/async_logger_impl.h \
@@ -74,15 +74,18 @@ HEADERS += \
     src/spdlog/tweakme.h \
     src/handler/FLOPingHandler.h \
     src/handler/FLOModuleRepositoryHandler.h \
-	src/handler/FLOModuleInstancesHandler.h \
+        src/handler/FLOModuleInstancesHandler.h \
     src/flaaoscsdk/FLOModuleInstanceDAO.h \
     src/flaaoscsdk/FLOModuleInstancesModel.h
 
 DISTFILES += \
     .astylerc \
     src/spdlog/fmt/bundled/LICENSE.rst \
-    src/flaaoscsdk/README.md
+    src/flaaoscsdk/README.md \
+    src/flaaoscsdk/flaaoscsdk.pri \
+    src/flaaoscsdk/flaaoscsdk.pri
 
+include( src/flaaoscsdk/flaaoscsdk.pri)
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../build-flaarlib-Desktop_ad6991-Debug/release/ -lflaarlib
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../build-flaarlib-Desktop_ad6991-Debug/debug/ -lflaarlib
