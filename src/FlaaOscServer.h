@@ -5,7 +5,12 @@
 #include "flaaoscsdk/osclistener.h"
 #include "flaaoscsdk/oscsender.h"
 
+#include <memory>
+
 #include <QObject>
+
+class FLOModuleInstancesModel;
+class FLOFlaarlibBridge;
 
 class FlaaOscServer : public QObject
 {
@@ -22,17 +27,24 @@ public:
 	}
 
 	void testConnection();
+	void openSockets();
+	void closeSockets();
+
 
 public: //getter
 	OscListener *udpListener() const;
 	OscSender *udpSender() const;
+	FLOModuleInstancesModel *moduleInstancesModel() const;
+	flaarlib::Flaarlib *flaarlib() const;
+	FLOFlaarlibBridge *pFlaarlibBride() const;
 
+public: //setter
 	void setListenPort(int iListenPort);
 	void setSendPort(int iSendHost);
 	void setSendHost(const std::string &sSendHost);
 
-	void openSockets();
-	void closeSockets();
+
+
 
 public slots:
 	void listenerThreadStarted();
@@ -58,6 +70,9 @@ private: // members
 	OscListener *m_pUdpListener = 0;
 	OscSender *m_pUdpSender = 0;
 	QThread *m_pListenerThread = 0;
+
+	std::unique_ptr<FLOModuleInstancesModel> m_pModuleInstancesModel;
+	std::unique_ptr<FLOFlaarlibBridge> m_pFlaarlibBride;
 
 	class CGuard
 	{
