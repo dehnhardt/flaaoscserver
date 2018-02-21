@@ -1,5 +1,7 @@
 #include "FLOModuleInstancesHandler.h"
 #include "../flaaoscsdk/FLOModuleInstanceDAO.h"
+#include "../FlaaOscServer.h"
+#include "../model/FLOModuleInstancesModel.h"
 
 #include <QDebug>
 
@@ -19,6 +21,7 @@ bool FLOModuleInstancesHandler::handle(UdpSocket *socket, Message *message)
 	{
 		FLOModuleInstanceDAO *moduleInstance = new FLOModuleInstanceDAO();
 		moduleInstance->deserialize(message);
+		FlaaOscServer::instance()->moduleInstancesModel()->addFLOModuleInstance(moduleInstance);
 		qDebug() << "Function String: " << function.c_str();
 	}
 	return true;
