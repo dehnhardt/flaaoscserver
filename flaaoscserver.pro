@@ -20,7 +20,9 @@ SOURCES += \
     src/logging/MyLogger.cpp \
     src/handler/FLOPingHandler.cpp \
     src/handler/FLOModuleRepositoryHandler.cpp \
-    src/handler/FLOModuleInstancesHandler.cpp
+    src/handler/FLOModuleInstancesHandler.cpp \
+    src/model/FLOModuleInstancesModel.cpp \
+    src/model/FLOFlaarlibBridge.cpp
 
 HEADERS += \
     src/FlaaOscServer.h \
@@ -64,7 +66,9 @@ HEADERS += \
     src/spdlog/tweakme.h \
     src/handler/FLOPingHandler.h \
     src/handler/FLOModuleRepositoryHandler.h \
-        src/handler/FLOModuleInstancesHandler.h
+        src/handler/FLOModuleInstancesHandler.h \
+    src/model/FLOModuleInstancesModel.h \
+    src/model/FLOFlaarlibBridge.h
 
 DISTFILES += \
     .astylerc \
