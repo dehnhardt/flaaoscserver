@@ -65,6 +65,8 @@ bool FLOModuleRepositoryHandler::sendModuleRepository()
 
 bool FLOModuleRepositoryHandler::handle(UdpSocket *socket, Message *message)
 {
+	Q_UNUSED(socket)
+
 	if( message->match(prefix()))
 	{
 		sendModuleRepository();

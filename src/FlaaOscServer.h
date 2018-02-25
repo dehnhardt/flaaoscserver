@@ -2,15 +2,17 @@
 #define FLAAOSCSERVER_H
 
 #include "Flaarlib.h"
-#include "flaaoscsdk/osclistener.h"
-#include "flaaoscsdk/oscsender.h"
 
 #include <memory>
 
 #include <QObject>
 
+class OscListener;
+class OscSender;
 class FLOModuleInstancesModel;
 class FLOFlaarlibBridge;
+class FLOModuleRepositoryHandler;
+class FLOModuleInstancesHandler;
 
 class FlaaOscServer : public QObject
 {
@@ -29,12 +31,14 @@ public:
 	void testConnection();
 	void openSockets();
 	void closeSockets();
-
+	void saveStructure();
+	void readStructure();
 
 public: //getter
 	OscListener *udpListener() const;
 	OscSender *udpSender() const;
 	FLOModuleInstancesModel *moduleInstancesModel() const;
+	FLOModuleRepositoryHandler *repositoryModuleHandler() const;
 	flaarlib::Flaarlib *flaarlib() const;
 	FLOFlaarlibBridge *pFlaarlibBride() const;
 
@@ -44,13 +48,10 @@ public: //setter
 	void setSendHost(const std::string &sSendHost);
 
 
-
-
 public slots:
 	void listenerThreadStarted();
 	void listenerThreadFinished();
 	void onApplicationExit();
-
 
 private: // methods
 	FlaaOscServer();
@@ -58,6 +59,7 @@ private: // methods
 	virtual ~FlaaOscServer();
 	void registerHandler();
 	void connectSlots();
+	void createGlobalHandlers();
 
 private: // members
 	static FlaaOscServer *_instance;
@@ -70,6 +72,10 @@ private: // members
 	OscListener *m_pUdpListener = 0;
 	OscSender *m_pUdpSender = 0;
 	QThread *m_pListenerThread = 0;
+
+	// global handler
+	std::unique_ptr<FLOModuleInstancesHandler> m_pInstancesModuleHandler;
+	std::unique_ptr<FLOModuleRepositoryHandler> m_pRepositoryModuleHandler;
 
 	std::unique_ptr<FLOModuleInstancesModel> m_pModuleInstancesModel;
 	std::unique_ptr<FLOFlaarlibBridge> m_pFlaarlibBride;

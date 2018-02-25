@@ -16,6 +16,7 @@ public:
 	explicit FLOModuleInstancesModel(QObject *parent = nullptr);
 	void serialize(QXmlStreamWriter *xmlWriter);
 	void deserialize(QXmlStreamReader *xmlReader);
+	void sendModules();
 
 public: //setter
 	void addFLOModuleInstance( FLOModuleInstanceDAO *moduleInstance );

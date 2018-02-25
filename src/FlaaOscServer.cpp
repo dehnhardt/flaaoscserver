@@ -1,6 +1,9 @@
+#include "flaaoscsdk/osclistener.h"
+#include "flaaoscsdk/oscsender.h"
 #include "FlaaOscServer.h"
 #include "logging/FLLogger.h"
 #include "logging/MyLogger.h"
+#include "logging/FLLog.h"
 #include "handler/FLOPingHandler.h"
 #include "handler/FLOModuleRepositoryHandler.h"
 #include "handler/FLOModuleInstancesHandler.h"
@@ -10,6 +13,8 @@
 
 #include <QCoreApplication>
 #include <QThread>
+#include <QFile>
+#include <QTextCodec>
 
 FlaaOscServer::FlaaOscServer()
 {
@@ -34,11 +39,14 @@ void FlaaOscServer::openSockets()
 	m_pUdpListener = new OscListener(m_iListenPort);
 
 	m_pUdpListener->moveToThread(m_pListenerThread);
+	createGlobalHandlers();
 	registerHandler();
 	connectSlots();
 
 	m_pUdpSender->start();
 	m_pListenerThread->start();
+	m_pRepositoryModuleHandler.get()->sendModuleRepository();
+	readStructure();
 }
 
 void FlaaOscServer::closeSockets()
@@ -52,8 +60,8 @@ void FlaaOscServer::closeSockets()
 void FlaaOscServer::registerHandler()
 {
 	m_pUdpListener->registerHandler(new FLOPingHandler());
-	m_pUdpListener->registerHandler(new FLOModuleRepositoryHandler());
-	m_pUdpListener->registerHandler(new FLOModuleInstancesHandler());
+	m_pUdpListener->registerHandler(m_pRepositoryModuleHandler.get());
+	m_pUdpListener->registerHandler(m_pInstancesModuleHandler.get());
 }
 
 void FlaaOscServer::connectSlots()
@@ -62,10 +70,23 @@ void FlaaOscServer::connectSlots()
 	connect(m_pListenerThread, &QThread::finished, m_pUdpListener, &OscListener::exit);
 	connect(m_pUdpListener, &OscListener::started, this, &FlaaOscServer::listenerThreadStarted);
 	connect(m_pUdpListener, &OscListener::finished, this, &FlaaOscServer::listenerThreadFinished);
+
 	connect(m_pModuleInstancesModel.get(), &FLOModuleInstancesModel::moduleAdded, m_pFlaarlibBride.get(), &FLOFlaarlibBridge::moduleAdded );
+	connect(m_pModuleInstancesModel.get(), &FLOModuleInstancesModel::moduleAdded, m_pInstancesModuleHandler.get(), &FLOModuleInstancesHandler::addModuleInstance);
 
 	// Allow graceful termination of the thread
 	connect(QCoreApplication::instance(), &QCoreApplication::aboutToQuit, this, &FlaaOscServer::onApplicationExit );
+}
+
+void FlaaOscServer::createGlobalHandlers()
+{
+	this->m_pRepositoryModuleHandler = std::make_unique<FLOModuleRepositoryHandler>();
+	this->m_pInstancesModuleHandler = std::make_unique<FLOModuleInstancesHandler>();
+}
+
+FLOModuleRepositoryHandler *FlaaOscServer::repositoryModuleHandler() const
+{
+	return m_pRepositoryModuleHandler.get();
 }
 
 FLOFlaarlibBridge *FlaaOscServer::pFlaarlibBride() const
@@ -105,12 +126,12 @@ OscSender *FlaaOscServer::udpSender() const
 
 void FlaaOscServer::listenerThreadStarted()
 {
-	qDebug( "listener thread has started" );
+	flaarlib::FLLog::debug("listener thread has started" );
 }
 
 void FlaaOscServer::listenerThreadFinished()
 {
-	qDebug( "listener thread has stopped" );
+	flaarlib::FLLog::debug( "listener thread has stopped" );
 	m_pUdpListener->deleteLater();
 }
 
@@ -133,6 +154,50 @@ void FlaaOscServer::testConnection()
 OscListener *FlaaOscServer::udpListener() const
 {
 	return m_pUdpListener;
+}
+
+void FlaaOscServer::saveStructure()
+{
+	QFile *file = new QFile("/home/dehnhardt/serverstructure.xml");
+	if (!file->open(QIODevice::WriteOnly | QIODevice::Text))
+		return;
+	QXmlStreamWriter *w = new QXmlStreamWriter(file);
+	w->setAutoFormatting(true);
+	w->setCodec(QTextCodec::codecForName("utf-8"));
+	w->writeStartDocument("1.0");
+	w->writeStartElement("ModuleInstances");
+	m_pModuleInstancesModel->serialize(w);
+	w->writeEndElement();
+	w->writeEndDocument();
+	file->close();
+}
+
+void FlaaOscServer::readStructure()
+{
+	QFile *file = new QFile("/home/dehnhardt/serverstructure.xml");
+	if (!file->open(QIODevice::ReadOnly | QIODevice::Text))
+		return;
+	QXmlStreamReader *xmlReader = new QXmlStreamReader(file);
+	while(!xmlReader->atEnd())
+	{
+		QXmlStreamReader::TokenType t = xmlReader->readNext();
+		QStringRef s = xmlReader->name();
+		switch( t )
+		{
+			case QXmlStreamReader::TokenType::StartElement:
+				flaarlib::FLLog::debug("Widget: Element Name: %s", s.toString().toStdString().c_str());
+				if( s == "ModuleInstances")
+					m_pModuleInstancesModel->deserialize(xmlReader);
+				break;
+			case QXmlStreamReader::TokenType::EndElement:
+				if( s == "ModuleInstances")
+					return;
+				break;
+			default:
+				break;
+		}
+	}
+	file->close();
 }
 
 FlaaOscServer *FlaaOscServer::_instance = 0;

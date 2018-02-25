@@ -41,10 +41,17 @@ void FLOModuleInstancesModel::deserialize(QXmlStreamReader *xmlReader)
 			case QXmlStreamReader::TokenType::EndElement:
 				if( s == "Modules")
 					return;
+				break;
 			default:
 				break;
 		}
 	}
+}
+
+void FLOModuleInstancesModel::sendModules()
+{
+	for( auto moduleInstance : m_moduleInstancesMap)
+		emit(moduleAdded(moduleInstance));
 }
 
 void FLOModuleInstancesModel::addFLOModuleInstance(FLOModuleInstanceDAO *moduleInstance)
