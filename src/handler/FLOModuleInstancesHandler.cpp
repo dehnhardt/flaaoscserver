@@ -27,20 +27,20 @@ bool FLOModuleInstancesHandler::handle(UdpSocket *socket, Message *message)
 	std::string function = lastPathToken(message->addressPattern());
 	if( function == "add")
 	{
+		flaarlib::FLLog::debug( "Function String: %s", function.c_str());
 		FLOModuleInstanceDAO *moduleInstance = new FLOModuleInstanceDAO();
 		moduleInstance->deserialize(message);
 		FlaaOscServer::instance()->moduleInstancesModel()->addFLOModuleInstance(moduleInstance);
-		flaarlib::FLLog::debug( "Function String: %s", function.c_str());
 	}
 	if( function == "save")
 	{
-		FlaaOscServer::instance()->saveStructure();
 		flaarlib::FLLog::debug( "Function String: %s", function.c_str());
+		FlaaOscServer::instance()->saveStructure();
 	}
 	if( function == "structure")
 	{
-		FlaaOscServer::instance()->moduleInstancesModel()->sendModules();
 		flaarlib::FLLog::debug( "Function String: %s", function.c_str());
+		FlaaOscServer::instance()->moduleInstancesModel()->sendModules();
 	}
 	return true;
 }
