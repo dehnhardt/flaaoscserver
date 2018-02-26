@@ -1,5 +1,6 @@
 #include "FLOModuleInstancesModel.h"
 #include "../flaaoscsdk/FLOModuleInstanceDAO.h"
+#include "logging/FLLog.h"
 
 #include <QDebug>
 
@@ -51,12 +52,16 @@ void FLOModuleInstancesModel::deserialize(QXmlStreamReader *xmlReader)
 void FLOModuleInstancesModel::sendModules()
 {
 	for( auto moduleInstance : m_moduleInstancesMap)
+	{
+		flaarlib::FLLog::debug("Added module instance %s ", moduleInstance->uuid().toString().toStdString().c_str());
 		emit(moduleAdded(moduleInstance));
+	}
 }
 
 void FLOModuleInstancesModel::addFLOModuleInstance(FLOModuleInstanceDAO *moduleInstance)
 {
 	m_moduleInstancesMap[moduleInstance->uuid()] = moduleInstance;
+	emit(addModule(moduleInstance));
 	emit(moduleAdded(moduleInstance));
 }
 

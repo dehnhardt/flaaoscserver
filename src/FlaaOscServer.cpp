@@ -71,7 +71,7 @@ void FlaaOscServer::connectSlots()
 	connect(m_pUdpListener, &OscListener::started, this, &FlaaOscServer::listenerThreadStarted);
 	connect(m_pUdpListener, &OscListener::finished, this, &FlaaOscServer::listenerThreadFinished);
 
-	connect(m_pModuleInstancesModel.get(), &FLOModuleInstancesModel::moduleAdded, m_pFlaarlibBride.get(), &FLOFlaarlibBridge::moduleAdded );
+	connect(m_pModuleInstancesModel.get(), &FLOModuleInstancesModel::addModule, m_pFlaarlibBride.get(), &FLOFlaarlibBridge::moduleAdded );
 	connect(m_pModuleInstancesModel.get(), &FLOModuleInstancesModel::moduleAdded, m_pInstancesModuleHandler.get(), &FLOModuleInstancesHandler::addModuleInstance);
 
 	// Allow graceful termination of the thread

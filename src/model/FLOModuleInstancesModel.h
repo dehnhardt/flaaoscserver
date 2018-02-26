@@ -26,6 +26,7 @@ public: //getter
 	QMap<QUuid, FLOModuleInstanceDAO *> getModuleInstancesMap();
 
 signals:
+	void addModule( FLOModuleInstanceDAO *moduleInstance);
 	void moduleAdded( FLOModuleInstanceDAO *moduleInstance);
 	void moduleRemoved( const QUuid &uuid);
 
