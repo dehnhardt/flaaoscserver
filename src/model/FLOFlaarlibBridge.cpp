@@ -1,4 +1,5 @@
 #include "FLOFlaarlibBridge.h"
+#include "FLOModuleInstancesModel.h"
 #include "Flaarlib.h"
 #include "modules/FLAudioFileInputModule.h"
 #include "modules/FLAudioFileOutputModule.h"
@@ -13,10 +14,16 @@ using namespace flaarlib;
 
 FLOFlaarlibBridge::FLOFlaarlibBridge(QObject *parent) : QObject(parent)
 {
-
 }
 
-void FLOFlaarlibBridge::moduleAdded(FLOModuleInstanceDAO *moduleInstance)
+void FLOFlaarlibBridge::setModuleInstancesModel(FLOModuleInstancesModel *model)
+{
+	this->m_pModuleInstancesModel = model;
+	connect(this->m_pModuleInstancesModel, &FLOModuleInstancesModel::addFLOModuleInstance, this, &FLOFlaarlibBridge::addModule);
+	connect(this->m_pModuleInstancesModel, &FLOModuleInstancesModel::removeFLOModuleInstance, this, &FLOFlaarlibBridge::removeModule);
+}
+
+void FLOFlaarlibBridge::addModule(FLOModuleInstanceDAO *moduleInstance)
 {
 	switch ( moduleInstance->moduleType())
 	{
@@ -56,7 +63,7 @@ void FLOFlaarlibBridge::moduleAdded(FLOModuleInstanceDAO *moduleInstance)
 	}
 }
 
-void FLOFlaarlibBridge::moduleRemoved(const QUuid &uuid)
+void FLOFlaarlibBridge::removeModule(const QUuid &uuid)
 {
-	Q_UNUSED(uuid);
+	Flaarlib::instance()->removeModule(uuid.toString().toStdString());
 }

@@ -4,6 +4,7 @@
 #include <QObject>
 
 class FLOModuleInstanceDAO;
+class FLOModuleInstancesModel;
 
 class FLOFlaarlibBridge : public QObject
 {
@@ -11,11 +12,16 @@ class FLOFlaarlibBridge : public QObject
 public:
 	explicit FLOFlaarlibBridge(QObject *parent = nullptr);
 
+	void setModuleInstancesModel( FLOModuleInstancesModel *model);
+
 signals:
 
 public slots:
-	void moduleAdded( FLOModuleInstanceDAO *moduleInstance);
-	void moduleRemoved( const QUuid &uuid);
+	void addModule( FLOModuleInstanceDAO *moduleInstance);
+	void removeModule( const QUuid &uuid);
+
+private: //members
+	FLOModuleInstancesModel *m_pModuleInstancesModel = 0;
 
 };
 

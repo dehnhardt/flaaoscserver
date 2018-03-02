@@ -46,7 +46,6 @@ void FlaaOscServer::openSockets()
 	m_pUdpSender->start();
 	m_pListenerThread->start();
 	m_pRepositoryModuleHandler.get()->sendModuleRepository();
-	readStructure();
 }
 
 void FlaaOscServer::closeSockets()
@@ -71,8 +70,8 @@ void FlaaOscServer::connectSlots()
 	connect(m_pUdpListener, &OscListener::started, this, &FlaaOscServer::listenerThreadStarted);
 	connect(m_pUdpListener, &OscListener::finished, this, &FlaaOscServer::listenerThreadFinished);
 
-	connect(m_pModuleInstancesModel.get(), &FLOModuleInstancesModel::addModule, m_pFlaarlibBride.get(), &FLOFlaarlibBridge::moduleAdded );
-	connect(m_pModuleInstancesModel.get(), &FLOModuleInstancesModel::moduleAdded, m_pInstancesModuleHandler.get(), &FLOModuleInstancesHandler::addModuleInstance);
+	//connect(m_pModuleInstancesModel.get(), &FLOModuleInstancesModel::moduleInstanceAdded, m_pInstancesModuleHandler.get(), &FLOModuleInstancesHandler::moduleInstanceAdded);
+	//connect(m_pModuleInstancesModel.get(), &FLOModuleInstancesModel::moduleInstanceRemoved, m_pInstancesModuleHandler.get(), &FLOModuleInstancesHandler::moduleInstanceRemoved);
 
 	// Allow graceful termination of the thread
 	connect(QCoreApplication::instance(), &QCoreApplication::aboutToQuit, this, &FlaaOscServer::onApplicationExit );
@@ -82,6 +81,7 @@ void FlaaOscServer::createGlobalHandlers()
 {
 	this->m_pRepositoryModuleHandler = std::make_unique<FLOModuleRepositoryHandler>();
 	this->m_pInstancesModuleHandler = std::make_unique<FLOModuleInstancesHandler>();
+	this->m_pInstancesModuleHandler.get()->setModel(this->moduleInstancesModel());
 }
 
 FLOModuleRepositoryHandler *FlaaOscServer::repositoryModuleHandler() const
@@ -140,6 +140,13 @@ void FlaaOscServer::onApplicationExit()
 	closeSockets();
 }
 
+
+void FlaaOscServer::init()
+{
+	m_pFlaarlibBride.get()->setModuleInstancesModel(moduleInstancesModel());
+	openSockets();
+	readStructure();
+}
 
 void FlaaOscServer::testConnection()
 {

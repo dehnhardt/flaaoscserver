@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
 		cerr << parser->helpText().toStdString();
 		exit (2);
 	}
-	s->openSockets();
+	s->init();
 	QTimer::singleShot(1000, [s]() {s->testConnection();} );
 
 	return app.exec();

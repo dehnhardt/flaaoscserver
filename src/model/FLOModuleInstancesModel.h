@@ -17,18 +17,20 @@ public:
 	void serialize(QXmlStreamWriter *xmlWriter);
 	void deserialize(QXmlStreamReader *xmlReader);
 	void sendModules();
+	void addFLOModuleInstance( FLOModuleInstanceDAO *moduleInstance );
+	void removeFLOModuleInstance(const QUuid uuid );
 
 public: //setter
-	void addFLOModuleInstance( FLOModuleInstanceDAO *moduleInstance );
 
 public: //getter
 	FLOModuleInstanceDAO *getFLOModuleInstance( QUuid uuid);
 	QMap<QUuid, FLOModuleInstanceDAO *> getModuleInstancesMap();
 
 signals:
-	void addModule( FLOModuleInstanceDAO *moduleInstance);
-	void moduleAdded( FLOModuleInstanceDAO *moduleInstance);
-	void moduleRemoved( const QUuid &uuid);
+	void addModuleInstance( FLOModuleInstanceDAO *moduleInstance);
+	void moduleInstanceAdded( FLOModuleInstanceDAO *moduleInstance);
+	void removeModuleInstance( const QUuid &uuid);
+	void moduleInstanceRemoved( const QUuid &uuid);
 
 public slots:
 

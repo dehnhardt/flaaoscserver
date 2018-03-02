@@ -54,15 +54,22 @@ void FLOModuleInstancesModel::sendModules()
 	for( auto moduleInstance : m_moduleInstancesMap)
 	{
 		flaarlib::FLLog::debug("Added module instance %s ", moduleInstance->uuid().toString().toStdString().c_str());
-		emit(moduleAdded(moduleInstance));
+		emit(moduleInstanceAdded(moduleInstance));
 	}
 }
 
 void FLOModuleInstancesModel::addFLOModuleInstance(FLOModuleInstanceDAO *moduleInstance)
 {
 	m_moduleInstancesMap[moduleInstance->uuid()] = moduleInstance;
-	emit(addModule(moduleInstance));
-	emit(moduleAdded(moduleInstance));
+	emit(addModuleInstance(moduleInstance));
+	emit(moduleInstanceAdded(moduleInstance));
+}
+
+void FLOModuleInstancesModel::removeFLOModuleInstance(const QUuid uuid)
+{
+	m_moduleInstancesMap.remove(uuid);
+	emit(removeModuleInstance(uuid));
+	emit(moduleInstanceRemoved(uuid));
 }
 
 FLOModuleInstanceDAO *FLOModuleInstancesModel::getFLOModuleInstance(QUuid uuid)
