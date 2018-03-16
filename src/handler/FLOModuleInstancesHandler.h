@@ -22,7 +22,13 @@ public:
 
 public slots:
 	bool moduleInstanceAdded(FLOModuleInstanceDAO *module);
+	bool moduleInstanceModified(FLOModuleInstanceDAO *module);
 	bool moduleInstanceRemoved(QUuid uuid);
+
+signals:
+	void addModuleInstance(FLOModuleInstanceDAO *module);
+	void modifyModuleInstance(FLOModuleInstanceDAO *module);
+	void removeModuleInstance(QUuid uuid);
 
 private: //members
 	FLOModuleInstancesModel *m_pModuleInstancesModel;
