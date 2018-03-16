@@ -80,9 +80,6 @@ private: // members
 
 	std::unique_ptr<FLOModuleInstancesModel> m_pModuleInstancesModel;
 
-	// bridge to library
-	std::unique_ptr<FLOFlaarlibBridge> m_pFlaarlibBride;
-
 	class CGuard
 	{
 	public:

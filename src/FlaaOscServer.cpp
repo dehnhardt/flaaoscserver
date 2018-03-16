@@ -84,11 +84,6 @@ FLOModuleRepositoryHandler *FlaaOscServer::repositoryModuleHandler() const
 	return m_pRepositoryModuleHandler.get();
 }
 
-FLOFlaarlibBridge *FlaaOscServer::pFlaarlibBride() const
-{
-	return m_pFlaarlibBride.get();
-}
-
 flaarlib::Flaarlib *FlaaOscServer::flaarlib() const
 {
 	return m_pFlaarlib;
