@@ -21,8 +21,7 @@ SOURCES += \
     src/handler/FLOPingHandler.cpp \
     src/handler/FLOModuleRepositoryHandler.cpp \
     src/handler/FLOModuleInstancesHandler.cpp \
-    src/model/FLOModuleInstancesModel.cpp \
-    src/model/FLOFlaarlibBridge.cpp
+    src/model/FLOModuleInstancesModel.cpp
 
 HEADERS += \
     src/FlaaOscServer.h \
@@ -67,8 +66,7 @@ HEADERS += \
     src/handler/FLOPingHandler.h \
     src/handler/FLOModuleRepositoryHandler.h \
         src/handler/FLOModuleInstancesHandler.h \
-    src/model/FLOModuleInstancesModel.h \
-    src/model/FLOFlaarlibBridge.h
+    src/model/FLOModuleInstancesModel.h
 
 DISTFILES += \
     .astylerc \

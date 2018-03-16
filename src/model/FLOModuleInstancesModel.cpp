@@ -1,8 +1,16 @@
 #include "FLOModuleInstancesModel.h"
 #include "../flaaoscsdk/FLOModuleInstanceDAO.h"
 #include "logging/FLLog.h"
+#include "Flaarlib.h"
+#include "modules/FLAudioFileInputModule.h"
+#include "modules/FLAudioFileOutputModule.h"
+#include "modules/FLMIDIFileInputModule.h"
+#include "modules/FLVolumeControl.h"
+#include "exceptions/Exceptions.h"
 
 #include <QDebug>
+
+using namespace flaarlib;
 
 FLOModuleInstancesModel::FLOModuleInstancesModel(QObject *parent)
 	: QObject(parent)
@@ -31,7 +39,7 @@ void FLOModuleInstancesModel::deserialize(QXmlStreamReader *xmlReader)
 		switch( t )
 		{
 			case QXmlStreamReader::TokenType::StartElement:
-				qDebug() << "Model: Element Name: " << s;
+				flaarlib::FLLog::debug("Model: Element Name: %s", s.toString().toStdString().c_str() );
 				if( s  == "Module")
 				{
 					FLOModuleInstanceDAO *i = new FLOModuleInstanceDAO();
@@ -60,16 +68,78 @@ void FLOModuleInstancesModel::sendModules()
 
 void FLOModuleInstancesModel::addFLOModuleInstance(FLOModuleInstanceDAO *moduleInstance)
 {
+	bool instanceAdded = false;
+	switch ( moduleInstance->moduleType())
+	{
+		case MODULE_TYPE::INPUT:
+			switch (moduleInstance->dataType() )
+			{
+				case DATA_TYPE::AUDIO:
+					new FLAudioFileInputModule(moduleInstance->uuid().toString().toStdString(), -1);
+					instanceAdded = true;
+					break;
+				case DATA_TYPE::MIDI:
+					new FLMIDIFileInputModule(moduleInstance->uuid().toString().toStdString());
+					instanceAdded = true;
+					break;
+				default:
+					break;
+			}
+			break;
+		case MODULE_TYPE::OUTPUT:
+			switch (moduleInstance->dataType() )
+			{
+				case DATA_TYPE::AUDIO:
+					new FLAudioFileOutputModule(moduleInstance->uuid().toString().toStdString(), -1);
+					instanceAdded = true;
+					break;
+				default:
+					break;
+			}
+			break;
+		case MODULE_TYPE::PROCESSOR:
+			switch (moduleInstance->dataType() )
+			{
+				case DATA_TYPE::ALL:
+					new FLVolumeControl(moduleInstance->uuid().toString().toStdString(), -1, -1);
+					instanceAdded = true;
+					break;
+				default:
+					break;
+			}
+			break;
+	}
+	if( instanceAdded )
+	{
+		m_moduleInstancesMap[moduleInstance->uuid()] = moduleInstance;
+		emit(moduleInstanceAdded(moduleInstance));
+	}
+}
+
+void FLOModuleInstancesModel::modifyFLOModuleInstance(FLOModuleInstanceDAO *moduleInstance)
+{
+	// Currently only the Position can change. Nothing more to do here.
 	m_moduleInstancesMap[moduleInstance->uuid()] = moduleInstance;
-	emit(addModuleInstance(moduleInstance));
-	emit(moduleInstanceAdded(moduleInstance));
+	emit(moduleInstanceModified(moduleInstance));
 }
 
 void FLOModuleInstancesModel::removeFLOModuleInstance(const QUuid uuid)
 {
-	m_moduleInstancesMap.remove(uuid);
-	emit(removeModuleInstance(uuid));
-	emit(moduleInstanceRemoved(uuid));
+	flaarlib::FLLog::debug("try to remove module from instances map");
+	flaarlib::FLLog::debug("bridging remove call");
+
+	if(	Flaarlib::instance()->removeModule(uuid.toString().toStdString()) )
+	{
+		if( m_moduleInstancesMap.remove(uuid) == 1 )
+		{
+			flaarlib::FLLog::debug("removed module from instances map");
+			emit(moduleInstanceRemoved(uuid));
+		}
+		else if( m_moduleInstancesMap.remove(uuid) > 1 )
+			flaarlib::FLLog::error("more than one module removed");
+		else if( m_moduleInstancesMap.remove(uuid) == 0 )
+			flaarlib::FLLog::debug("error when removing module from instances map");
+	}
 }
 
 FLOModuleInstanceDAO *FLOModuleInstancesModel::getFLOModuleInstance(QUuid uuid)

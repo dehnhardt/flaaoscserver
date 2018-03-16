@@ -17,8 +17,6 @@ public:
 	void serialize(QXmlStreamWriter *xmlWriter);
 	void deserialize(QXmlStreamReader *xmlReader);
 	void sendModules();
-	void addFLOModuleInstance( FLOModuleInstanceDAO *moduleInstance );
-	void removeFLOModuleInstance(const QUuid uuid );
 
 public: //setter
 
@@ -27,12 +25,14 @@ public: //getter
 	QMap<QUuid, FLOModuleInstanceDAO *> getModuleInstancesMap();
 
 signals:
-	void addModuleInstance( FLOModuleInstanceDAO *moduleInstance);
 	void moduleInstanceAdded( FLOModuleInstanceDAO *moduleInstance);
-	void removeModuleInstance( const QUuid &uuid);
+	void moduleInstanceModified( FLOModuleInstanceDAO *moduleInstance);
 	void moduleInstanceRemoved( const QUuid &uuid);
 
 public slots:
+	void addFLOModuleInstance( FLOModuleInstanceDAO *moduleInstance );
+	void modifyFLOModuleInstance( FLOModuleInstanceDAO *moduleInstance );
+	void removeFLOModuleInstance(const QUuid uuid );
 
 private:
 	QMap<QUuid, FLOModuleInstanceDAO *> m_moduleInstancesMap;

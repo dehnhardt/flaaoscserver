@@ -7,7 +7,6 @@
 #include "handler/FLOPingHandler.h"
 #include "handler/FLOModuleRepositoryHandler.h"
 #include "handler/FLOModuleInstancesHandler.h"
-#include "model/FLOFlaarlibBridge.h"
 #include "model/FLOModuleInstancesModel.h"
 #include "flaaoscsdk/FLOModuleInstanceDAO.h"
 
@@ -23,7 +22,6 @@ FlaaOscServer::FlaaOscServer()
 	flaarlib::MyLogger *l = new flaarlib::MyLogger();
 	flaarlib::FLLog::registerLogger(l);
 	m_pModuleInstancesModel = std::make_unique<FLOModuleInstancesModel>();
-	m_pFlaarlibBride = std::make_unique<FLOFlaarlibBridge>();
 }
 
 FlaaOscServer::~FlaaOscServer()
@@ -69,9 +67,6 @@ void FlaaOscServer::connectSlots()
 	connect(m_pListenerThread, &QThread::finished, m_pUdpListener, &OscListener::exit);
 	connect(m_pUdpListener, &OscListener::started, this, &FlaaOscServer::listenerThreadStarted);
 	connect(m_pUdpListener, &OscListener::finished, this, &FlaaOscServer::listenerThreadFinished);
-
-	//connect(m_pModuleInstancesModel.get(), &FLOModuleInstancesModel::moduleInstanceAdded, m_pInstancesModuleHandler.get(), &FLOModuleInstancesHandler::moduleInstanceAdded);
-	//connect(m_pModuleInstancesModel.get(), &FLOModuleInstancesModel::moduleInstanceRemoved, m_pInstancesModuleHandler.get(), &FLOModuleInstancesHandler::moduleInstanceRemoved);
 
 	// Allow graceful termination of the thread
 	connect(QCoreApplication::instance(), &QCoreApplication::aboutToQuit, this, &FlaaOscServer::onApplicationExit );
@@ -143,7 +138,6 @@ void FlaaOscServer::onApplicationExit()
 
 void FlaaOscServer::init()
 {
-	m_pFlaarlibBride.get()->setModuleInstancesModel(moduleInstancesModel());
 	openSockets();
 	readStructure();
 }
