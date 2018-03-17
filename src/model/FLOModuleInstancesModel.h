@@ -16,7 +16,7 @@ public:
 	explicit FLOModuleInstancesModel(QObject *parent = nullptr);
 	void serialize(QXmlStreamWriter *xmlWriter);
 	void deserialize(QXmlStreamReader *xmlReader);
-	void sendModules();
+	void sendModules(bool multiCast = true);
 
 public: //setter
 
@@ -25,14 +25,14 @@ public: //getter
 	QMap<QUuid, FLOModuleInstanceDAO *> getModuleInstancesMap();
 
 signals:
-	void moduleInstanceAdded( FLOModuleInstanceDAO *moduleInstance);
-	void moduleInstanceModified( FLOModuleInstanceDAO *moduleInstance);
-	void moduleInstanceRemoved( const QUuid &uuid);
+	void moduleInstanceAdded( FLOModuleInstanceDAO *moduleInstance, bool multiCast = true);
+	void moduleInstanceModified( FLOModuleInstanceDAO *moduleInstance, bool multiCast = true);
+	void moduleInstanceRemoved( const QUuid &uuid, bool multiCast = true);
 
 public slots:
-	void addFLOModuleInstance( FLOModuleInstanceDAO *moduleInstance );
-	void modifyFLOModuleInstance( FLOModuleInstanceDAO *moduleInstance );
-	void removeFLOModuleInstance(const QUuid uuid );
+	void addFLOModuleInstance( FLOModuleInstanceDAO *moduleInstance, bool multiCast = true );
+	void modifyFLOModuleInstance( FLOModuleInstanceDAO *moduleInstance, bool multiCast = true );
+	void removeFLOModuleInstance(const QUuid uuid, bool multiCast = true );
 
 private:
 	QMap<QUuid, FLOModuleInstanceDAO *> m_moduleInstancesMap;

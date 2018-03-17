@@ -57,16 +57,16 @@ void FLOModuleInstancesModel::deserialize(QXmlStreamReader *xmlReader)
 	}
 }
 
-void FLOModuleInstancesModel::sendModules()
+void FLOModuleInstancesModel::sendModules(bool multiCast)
 {
 	for( auto moduleInstance : m_moduleInstancesMap)
 	{
 		flaarlib::FLLog::debug("Added module instance %s ", moduleInstance->uuid().toString().toStdString().c_str());
-		emit(moduleInstanceAdded(moduleInstance));
+		emit(moduleInstanceAdded(moduleInstance, multiCast));
 	}
 }
 
-void FLOModuleInstancesModel::addFLOModuleInstance(FLOModuleInstanceDAO *moduleInstance)
+void FLOModuleInstancesModel::addFLOModuleInstance(FLOModuleInstanceDAO *moduleInstance, bool multiCast)
 {
 	bool instanceAdded = false;
 	switch ( moduleInstance->moduleType())
@@ -112,18 +112,18 @@ void FLOModuleInstancesModel::addFLOModuleInstance(FLOModuleInstanceDAO *moduleI
 	if( instanceAdded )
 	{
 		m_moduleInstancesMap[moduleInstance->uuid()] = moduleInstance;
-		emit(moduleInstanceAdded(moduleInstance));
+		emit(moduleInstanceAdded(moduleInstance, multiCast));
 	}
 }
 
-void FLOModuleInstancesModel::modifyFLOModuleInstance(FLOModuleInstanceDAO *moduleInstance)
+void FLOModuleInstancesModel::modifyFLOModuleInstance(FLOModuleInstanceDAO *moduleInstance, bool multiCast)
 {
 	// Currently only the Position can change. Nothing more to do here.
 	m_moduleInstancesMap[moduleInstance->uuid()] = moduleInstance;
-	emit(moduleInstanceModified(moduleInstance));
+	emit(moduleInstanceModified(moduleInstance, multiCast));
 }
 
-void FLOModuleInstancesModel::removeFLOModuleInstance(const QUuid uuid)
+void FLOModuleInstancesModel::removeFLOModuleInstance(const QUuid uuid, bool multiCast)
 {
 	flaarlib::FLLog::debug("try to remove module from instances map");
 	flaarlib::FLLog::debug("bridging remove call");
@@ -133,7 +133,7 @@ void FLOModuleInstancesModel::removeFLOModuleInstance(const QUuid uuid)
 		if( m_moduleInstancesMap.remove(uuid) == 1 )
 		{
 			flaarlib::FLLog::debug("removed module from instances map");
-			emit(moduleInstanceRemoved(uuid));
+			emit(moduleInstanceRemoved(uuid, multiCast));
 		}
 		else if( m_moduleInstancesMap.remove(uuid) > 1 )
 			flaarlib::FLLog::error("more than one module removed");

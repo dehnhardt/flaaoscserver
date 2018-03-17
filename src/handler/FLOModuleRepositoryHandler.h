@@ -8,7 +8,7 @@ class FLOModuleRepositoryHandler : public OscHandler
 public:
 	FLOModuleRepositoryHandler();
 
-	bool sendModuleRepository();
+	bool sendModuleRepository( bool multiCast = true);
 	bool handle(oscpkt::UdpSocket *socket, oscpkt::Message *message) override;
 };
 

@@ -65,40 +65,40 @@ bool FLOModuleInstancesHandler::handle(UdpSocket *socket, Message *message)
 	if( function == "structure")
 	{
 		flaarlib::FLLog::debug( "Calling send structure", function.c_str());
-		FlaaOscServer::instance()->moduleInstancesModel()->sendModules();
+		FlaaOscServer::instance()->moduleInstancesModel()->sendModules(false);
 	}
 	return true;
 }
 
-bool FLOModuleInstancesHandler::moduleInstanceAdded(FLOModuleInstanceDAO *module)
+bool FLOModuleInstancesHandler::moduleInstanceAdded(FLOModuleInstanceDAO *module, bool multiCast)
 {
 	std::string path = prefix() + "/added";
 	flaarlib::FLLog::debug("start sending module added(path: %s)", path.c_str());
 	OscSender *sender = FlaaOscServer::instance()->udpSender();
 	Message msg(path);
 	module->serialize(&msg);
-	sender->enqueuMessage(msg);
+	sender->enqueuMessage(msg, multiCast);
 	return(true);
 }
 
-bool FLOModuleInstancesHandler::moduleInstanceModified(FLOModuleInstanceDAO *module)
+bool FLOModuleInstancesHandler::moduleInstanceModified(FLOModuleInstanceDAO *module, bool multiCast)
 {
 	std::string path = prefix() + "/modified";
 	flaarlib::FLLog::debug("start sending module modified(path: %s)", path.c_str());
 	OscSender *sender = FlaaOscServer::instance()->udpSender();
 	Message msg(path);
 	module->serialize(&msg);
-	sender->enqueuMessage(msg);
+	sender->enqueuMessage(msg, multiCast);
 	return(true);
 }
 
-bool FLOModuleInstancesHandler::moduleInstanceRemoved(QUuid uuid)
+bool FLOModuleInstancesHandler::moduleInstanceRemoved(QUuid uuid, bool multiCast)
 {
 	std::string path = prefix() + "/removed";
 	flaarlib::FLLog::debug("start sending module removed(path: %s)", path.c_str());
 	OscSender *sender = FlaaOscServer::instance()->udpSender();
 	Message msg(path);
 	msg.pushStr(uuid.toString());
-	sender->enqueuMessage(msg);
+	sender->enqueuMessage(msg, multiCast);
 	return(true);
 }
