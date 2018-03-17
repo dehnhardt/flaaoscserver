@@ -17,7 +17,7 @@ FLOModuleRepositoryHandler::FLOModuleRepositoryHandler()
 
 }
 
-bool FLOModuleRepositoryHandler::sendModuleRepository(bool multiCast)
+bool FLOModuleRepositoryHandler::sendModuleRepository(bool multiCast __attribute__((unused)))
 {
 	std::string path = "/ws/repository/module";
 	FLLog::debug("start sending module Repository (path: %s)", path.c_str());
@@ -59,10 +59,7 @@ bool FLOModuleRepositoryHandler::sendModuleRepository(bool multiCast)
 		}
 	}
 	w.endBundle();
-	if( multiCast )
-		sender->sendPackageMulticast(w);
-	else
-		sender->sendPackage(w);
+	sender->sendPackage(w);
 	return true;
 }
 
